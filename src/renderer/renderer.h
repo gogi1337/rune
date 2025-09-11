@@ -1,4 +1,5 @@
 #pragma once
+
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 #include <stdexcept>
@@ -33,6 +34,15 @@ private:
     std::vector<VkCommandBuffer> commandBuffers;
     VkSemaphore imageAvailableSemaphore;
     VkSemaphore renderFinishedSemaphore;
+    VkDescriptorSetLayout descriptorSetLayout;
+    VkBuffer uniformBuffer;
+    VkDeviceMemory uniformBufferMemory;
+    VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
+    VkBuffer indexBuffer;
+    VkDeviceMemory indexBufferMemory;
+
+
 
     // --- core ---
     void initWindow();
@@ -44,6 +54,7 @@ private:
     void createInstance();
     void createSurface();
     void pickPhysicalDevice();
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
     void createLogicalDevice();
     void createSwapchain();
     void createImageViews();
@@ -51,6 +62,7 @@ private:
     void createGraphicsPipeline();
     void createFramebuffers();
     void createCommandPool();
+    // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
     void createCommandBuffers();
     void createSyncObjects();
 

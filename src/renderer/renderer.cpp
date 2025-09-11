@@ -53,7 +53,13 @@ void Renderer::initVulkan() {
 
 void Renderer::mainLoop() {
     while (!glfwWindowShouldClose(window)) {
-        glfwPollEvents();
+        glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+
+            if (key == GLFW_KEY_W && action == GLFW_PRESS)
+                std::cout << "W pressed!" << std::endl;
+        });        glfwPollEvents();
         drawFrame();
     }
     vkDeviceWaitIdle(device);
@@ -217,6 +223,20 @@ void Renderer::pickPhysicalDevice() {
         throw std::runtime_error("failed to find suitable GPU!");
 }
 
+uint32_t Renderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties) {
+    VkPhysicalDeviceMemoryProperties memProperties;
+    vkGetPhysicalDeviceMemoryProperties(physicalDevice, &memProperties);
+
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+        if ((typeFilter & (1 << i)) &&
+            (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+            return i;
+        }
+    }
+
+    throw std::runtime_error("failed to find suitable memory type!");
+}
+
 void Renderer::createLogicalDevice() {
     QueueFamilyIndices indices = findQueueFamilies(physicalDevice, surface);
 
@@ -376,14 +396,13 @@ void Renderer::createGraphicsPipeline() {
     auto fragCode = readFile("./assets/shaders/tri.frag.spv");
 
     VkShaderModule vertModule = createShaderModule(vertCode);
-    VkShaderModule fragModule = createShaderModule(fragCode);
-
     VkPipelineShaderStageCreateInfo vertStage{};
     vertStage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vertStage.stage = VK_SHADER_STAGE_VERTEX_BIT;
     vertStage.module = vertModule;
     vertStage.pName = "main";
 
+    VkShaderModule fragModule = createShaderModule(fragCode);
     VkPipelineShaderStageCreateInfo fragStage{};
     fragStage.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     fragStage.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
