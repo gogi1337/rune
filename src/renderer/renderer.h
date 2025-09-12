@@ -59,6 +59,5 @@ struct Renderer {
     void draw();
 
     // --- helpers ---
-    static std::vector<char> read_file(const std::string& filename);
     VkShaderModule create_shader_module(const std::vector<char>& code);
 };

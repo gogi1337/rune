@@ -1,0 +1,14 @@
+#include <fstream>
+
+#include "file.h"
+
+std::vector<char> read_file(const std::string& filename) {
+    std::ifstream file(filename, std::ios::ate | std::ios::binary);
+    if (!file.is_open()) throw std::runtime_error("failed to open file!");
+    size_t size = (size_t)file.tellg();
+    std::vector<char> buffer(size);
+    file.seekg(0);
+    file.read(buffer.data(), size);
+    file.close();
+    return buffer;
+}
