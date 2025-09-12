@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 
 struct Window {

@@ -1,8 +1,7 @@
-#include <stdexcept>
-#include <vulkan/vulkan.h>
-
 #include "window.h"
 #include "const.h"
+
+#include <stdexcept>
 
 void Window::init_window() {
     glfwInit();

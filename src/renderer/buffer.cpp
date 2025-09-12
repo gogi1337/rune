@@ -1,7 +1,7 @@
+#include "buffer.h"
+
 #include <iostream>
 #include <cstring>
-
-#include "buffer.h"
 
 bool VulkanBuffer::init(VkPhysicalDevice physical_device, VkDevice device, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties) {
     m_size = size;

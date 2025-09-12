@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../window.h"
+
 #include <vulkan/vulkan.h>
 #include <GLFW/glfw3.h>
 #include <stdexcept>
@@ -9,7 +11,6 @@
 #include <set>
 #include <fstream>
 
-#include "../window.h"
 
 struct Renderer {
     Window* window;

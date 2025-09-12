@@ -1,6 +1,6 @@
-#include <GLFW/glfw3.h>
-
 #include "engine.h"
+
+#include <GLFW/glfw3.h>
 
 void Engine::init() {
     window = new Window();
@@ -19,7 +19,13 @@ void Engine::loop() {
                 glfwSetWindowShouldClose(window, GLFW_TRUE);
 
             if (key == GLFW_KEY_W && action == GLFW_PRESS)
-                std::cout << "W pressed!" << std::endl;
+                std::cout << "W pressed\n";
+            if (key == GLFW_KEY_S && action == GLFW_PRESS)
+                std::cout << "S pressed\n";
+            if (key == GLFW_KEY_A && action == GLFW_PRESS)
+                std::cout << "A pressed\n";
+            if (key == GLFW_KEY_D && action == GLFW_PRESS)
+                std::cout << "D pressed\n";
         });
 
         glfwPollEvents();
