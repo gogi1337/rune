@@ -9,66 +9,56 @@
 #include <set>
 #include <fstream>
 
-class Renderer {
-public:
-    void run();
+#include "../window.h"
 
-private:
-    GLFWwindow* window = nullptr;
+struct Renderer {
+    Window* window;
     VkInstance instance;
     VkSurfaceKHR surface;
-    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+    VkPhysicalDevice physical_device = VK_NULL_HANDLE;
     VkDevice device;
-    VkQueue graphicsQueue;
-    VkQueue presentQueue;
+    VkQueue graphics_queue;
+    VkQueue present_queue;
     VkSwapchainKHR swapchain;
-    std::vector<VkImage> swapchainImages;
-    VkFormat swapchainImageFormat;
-    VkExtent2D swapchainExtent;
-    std::vector<VkImageView> swapchainImageViews;
-    VkRenderPass renderPass;
-    VkPipelineLayout pipelineLayout;
-    VkPipeline graphicsPipeline;
-    std::vector<VkFramebuffer> swapchainFramebuffers;
-    VkCommandPool commandPool;
-    std::vector<VkCommandBuffer> commandBuffers;
-    VkSemaphore imageAvailableSemaphore;
-    VkSemaphore renderFinishedSemaphore;
-    VkDescriptorSetLayout descriptorSetLayout;
-    VkBuffer uniformBuffer;
-    VkDeviceMemory uniformBufferMemory;
-    VkBuffer vertexBuffer;
-    VkDeviceMemory vertexBufferMemory;
-    VkBuffer indexBuffer;
-    VkDeviceMemory indexBufferMemory;
-
-
+    std::vector<VkImage> swapchain_images;
+    VkFormat swapchain_image_format;
+    VkExtent2D swapchain_extent;
+    std::vector<VkImageView> swapchain_image_views;
+    VkRenderPass render_pass;
+    VkPipelineLayout pipeline_layout;
+    VkPipeline graphics_pipeline;
+    std::vector<VkFramebuffer> swapchain_framebuffers;
+    VkCommandPool command_pool;
+    std::vector<VkCommandBuffer> command_buffers;
+    VkSemaphore image_available_semaphore;
+    VkSemaphore render_finished_semaphore;
+    VkDescriptorSetLayout descriptor_set_layout;
 
     // --- core ---
-    void initWindow();
-    void initVulkan();
-    void mainLoop();
-    void cleanup();
+    void init_renderer(Window* wind);
+    void init_vulkan();
+    void deinit();
 
     // --- vulkan setup ---
-    void createInstance();
-    void createSurface();
-    void pickPhysicalDevice();
-    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
-    void createLogicalDevice();
-    void createSwapchain();
-    void createImageViews();
-    void createRenderPass();
-    void createGraphicsPipeline();
-    void createFramebuffers();
-    void createCommandPool();
+    void create_instance();
+    void create_surface();
+    void pick_physical_device();
+    uint32_t find_memory_type(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+    void create_logical_device();
+    void create_swapchain();
+    void create_image_views();
+    void create_renderpass();
+    void create_graphics_pipeline();
+    void create_framebuffers();
+    void create_command_pool();
     // void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &bufferMemory);
-    void createCommandBuffers();
-    void createSyncObjects();
+    void create_command_buffers();
+    void create_sync_objects();
 
-    void drawFrame();
+    void device_wait_idle();
+    void draw();
 
     // --- helpers ---
-    static std::vector<char> readFile(const std::string& filename);
-    VkShaderModule createShaderModule(const std::vector<char>& code);
+    static std::vector<char> read_file(const std::string& filename);
+    VkShaderModule create_shader_module(const std::vector<char>& code);
 };
