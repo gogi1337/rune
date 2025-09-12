@@ -9,6 +9,7 @@ struct Window {
     GLFWwindow* inner = nullptr;
 
     void init_window();
+    void create_surface(VkInstance instance, VkSurfaceKHR *surface);
     void loop();
     void deinit();
 };

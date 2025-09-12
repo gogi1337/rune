@@ -30,7 +30,7 @@ void Renderer::init_renderer(Window* wind) {
 
 void Renderer::init_vulkan() {
     create_instance();
-    create_surface();
+    window->create_surface(instance, &surface);
     pick_physical_device();
     create_logical_device();
     create_swapchain();
@@ -64,6 +64,9 @@ void Renderer::deinit() {
     vkDestroyInstance(instance, nullptr);
 }
 
+/** 
+ * GOING TO pipeline.cpp 
+ */
 VkShaderModule Renderer::create_shader_module(const std::vector<char>& code) {
     VkShaderModuleCreateInfo createInfo{};
     createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -97,11 +100,6 @@ void Renderer::create_instance() {
 
     if (vkCreateInstance(&createInfo, nullptr, &instance) != VK_SUCCESS)
         throw std::runtime_error("failed to create instance!");
-}
-
-void Renderer::create_surface() {
-    if (glfwCreateWindowSurface(instance, window->inner, nullptr, &surface) != VK_SUCCESS)
-        throw std::runtime_error("failed to create window surface!");
 }
 
 // ---------------- device ----------------
@@ -354,6 +352,9 @@ void Renderer::create_renderpass() {
         throw std::runtime_error("failed to create render pass!");
 }
 
+/** 
+ * GOING TO pipeline.cpp 
+ */
 void Renderer::create_graphics_pipeline() {
     auto vertCode = read_file("./assets/shaders/tri.vert.spv");
     auto fragCode = read_file("./assets/shaders/tri.frag.spv");
