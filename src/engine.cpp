@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include <GLFW/glfw3.h>
+#include <iostream>
 
 void Engine::init() {
     window = new Window();
@@ -30,6 +31,7 @@ void Engine::loop() {
 
         glfwPollEvents();
         renderer->draw();
+        // std::cout << "drawed a frame\n";
     }
     renderer->device_wait_idle();
 }

@@ -5,6 +5,13 @@ Pipeline::Pipeline(const std::string& vert_path, const std::string& frag_path, P
     create_graphics_pipeline();
 }
 
+Pipeline::~Pipeline() {
+    // when i implement pipeline->device member into Pipeline
+//   vkDestroyShaderModule(device.device(), vertShaderModule, nullptr);
+//   vkDestroyShaderModule(device.device(), fragShaderModule, nullptr);
+//   vkDestroyPipeline(device.device(), graphicsPipeline, nullptr);
+}
+
 void Pipeline::create_graphics_pipeline() {
     auto vert_code = read_file(m_vert_path);
     auto frag_code = read_file(m_frag_path);
@@ -27,5 +34,13 @@ void Pipeline::create_graphics_pipeline() {
 }
 
 void Pipeline::create_shader_module(const std::vector<char>& code, VkShaderModule* shader_module) {
+    // todo
+}
+
+void Pipeline::default_config_info(PipelineConfigInfo config_info) {
+    // todo
+}
+
+void Pipeline::bind(VkCommandBuffer command_buffer) {
     // todo
 }
