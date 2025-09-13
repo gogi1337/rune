@@ -258,8 +258,8 @@ bool Device::check_validation_layer_support() {
     uint32_t layer_count;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
 
-    std::vector<VkLayerProperties> available_layers(layerCount);
-    vkEnumerateInstanceLayerProperties(&layerCount, available_layers.data());
+    std::vector<VkLayerProperties> available_layers(layer_count);
+    vkEnumerateInstanceLayerProperties(&layer_count, available_layers.data());
 
     for (const char *layer_name : m_validation_layers) {
         bool layer_found = false;
