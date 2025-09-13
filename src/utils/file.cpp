@@ -1,6 +1,7 @@
 #include "file.h"
 
 #include <fstream>
+#include <stdexcept>
 
 std::vector<char> read_file(const std::string& filename) {
     std::ifstream file(filename, std::ios::ate | std::ios::binary);
