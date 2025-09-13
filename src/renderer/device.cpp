@@ -23,7 +23,7 @@ Device::Device(Window &window) : m_window{window} {
     create_command_pool();
 }
 
-    Device::~Device() {
+Device::~Device() {
     vkDestroyCommandPool(m_device, m_command_pool, nullptr);
     vkDestroyDevice(m_device, nullptr);
 
@@ -199,6 +199,28 @@ void Device::populate_debug_messenger_create_info(VkDebugUtilsMessengerCreateInf
   create_info.pUserData = nullptr;  // Optional
 }
 
+void Device::has_glfw_required_instance_extensions() {
+    uint32_t extensionCount = 0;
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);
+    std::vector<VkExtensionProperties> extensions(extensionCount);
+    vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, extensions.data());
+
+    std::cout << "available extensions:" << std::endl;
+    std::unordered_set<std::string> available;
+    for (const auto &extension : extensions) {
+    std::cout << "\t" << extension.extensionName << std::endl;
+    available.insert(extension.extensionName);
+    }
+
+    std::cout << "required extensions:" << std::endl;
+    auto requiredExtensions = get_required_extensions();
+    for (const auto &required : requiredExtensions) {
+        if (available.find(required) == available.end()) {
+            throw std::runtime_error("Missing required glfw extension");
+        }
+    }
+}
+
 void Device::setup_debug_messenger() {
     if (!enable_validation_layers) return;
     VkDebugUtilsMessengerCreateInfoEXT createInfo;
@@ -217,6 +239,45 @@ bool Device::is_device_suitable(VkPhysicalDevice device) {
         throw std::runtime_error("failed to set up debug messenger!");
     }
 }
+
+std::vector<const char *> Device::get_required_extensions() {
+    uint32_t glfwExtensionCount = 0;
+    const char **glfwExtensions;
+    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+    std::vector<const char *> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+    if (enable_validation_layers) {
+        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    }
+
+    return extensions;
+}
+
+bool Device::check_validation_layer_support() {
+    uint32_t layer_count;
+    vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+
+    std::vector<VkLayerProperties> available_layers(layerCount);
+    vkEnumerateInstanceLayerProperties(&layerCount, available_layers.data());
+
+    for (const char *layer_name : m_validation_layers) {
+        bool layer_found = false;
+
+        for (const auto &layer_props : available_layers) {
+            if (strcmp(layer_name, layer_props.layerName) == 0) {
+                layer_found = true;
+                break;
+            }
+        }
+
+        if (!layer_found) {
+            return false;
+        }
+    }
+
+    return true;
+};
 
 void Device::create_surface() { m_window.create_surface(m_instance, &m_surface); }
 
