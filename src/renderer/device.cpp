@@ -254,6 +254,58 @@ std::vector<const char *> Device::get_required_extensions() {
     return extensions;
 }
 
+bool Device::check_device_extension_support(VkPhysicalDevice device) {
+    uint32_t extension_count;
+    vkEnumerateDeviceExtensionProperties(device, nullptr, &extension_count, nullptr);
+
+    std::vector<VkExtensionProperties> available_extensions(extension_count);
+    vkEnumerateDeviceExtensionProperties(
+        device,
+        nullptr,
+        &extension_count,
+        available_extensions.data());
+
+    std::set<std::string> required_extensions(m_device_extensions.begin(), m_device_extensions.end());
+
+    for (const auto &extension : available_extensions) {
+        required_extensions.erase(extension.extensionName);
+    }
+
+    return required_extensions.empty();
+}
+
+SwapChainSupportDetails Device::get_swap_chain_support() {
+    return query_swap_chain_support(m_physical_device);
+}
+
+SwapChainSupportDetails Device::query_swap_chain_support(VkPhysicalDevice device) {
+    SwapChainSupportDetails details;
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, m_surface, &details.capabilities);
+
+    uint32_t format_count;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_surface, &format_count, nullptr);
+
+    if (format_count != 0) {
+        details.formats.resize(format_count);
+        vkGetPhysicalDeviceSurfaceFormatsKHR(device, m_surface, &format_count, details.formats.data());
+    }
+
+    uint32_t present_mode_count;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(device, m_surface, &present_mode_count, nullptr);
+
+    if (present_mode_count != 0) {
+        details.present_modes.resize(present_mode_count);
+        vkGetPhysicalDeviceSurfacePresentModesKHR(
+            device,
+            m_surface,
+            &present_mode_count,
+            details.present_modes.data()
+        );
+    }
+
+    return details;
+}
+
 bool Device::check_validation_layer_support() {
     uint32_t layer_count;
     vkEnumerateInstanceLayerProperties(&layer_count, nullptr);

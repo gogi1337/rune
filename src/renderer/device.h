@@ -44,11 +44,12 @@ struct Device {
     VkQueue graphics_queue() { return m_graphics_queue; }
     VkQueue present_queue() { return m_present_queue; }
 
-    SwapChainSupportDetails get_swap_chain_support() { return query_swap_chain_support(m_physical_device); }
+    SwapChainSupportDetails get_swap_chain_support();
     uint32_t find_memory_type(uint32_t type_filter, VkMemoryPropertyFlags properties);
-    QueueFamilyIndices find_physical_queue_families() { return find_queue_families(m_physical_device); }
+    QueueFamilyIndices find_physical_queue_families();
     VkFormat find_supported_format(
-        const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
+        const std::vector<VkFormat> &candidates, VkImageTiling tiling, VkFormatFeatureFlags features
+    );
 
     // Maybe should use only buffer.h or implement them there - idk
     // void create_buffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer &buffer, VkDeviceMemory &buffer_memory);
