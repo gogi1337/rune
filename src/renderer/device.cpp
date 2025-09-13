@@ -132,8 +132,7 @@ void Device::create_logical_device() {
     QueueFamilyIndices indices = find_queue_families(m_physical_device);
 
     std::vector<VkDeviceQueueCreateInfo> queue_create_infos;
-    std::set<uint32_t> unique_queue_families = {
-        indices.graphics_family, indices.present_family};
+    std::set<uint32_t> unique_queue_families = {indices.graphics_family.value(), indices.present_family.value()};
 
     float queue_priority = 1.0f;
     for (uint32_t queue_family : unique_queue_families) {
@@ -231,13 +230,21 @@ void Device::setup_debug_messenger() {
     }
 }
 bool Device::is_device_suitable(VkPhysicalDevice device) {
-    if (!enable_validation_layers) return;
-    VkDebugUtilsMessengerCreateInfoEXT createInfo;
-    populate_debug_messenger_create_info(createInfo);
+  QueueFamilyIndices indices = find_queue_families(device);
 
-    if (create_debug_utils_messenger_ext(m_instance, &createInfo, nullptr, &m_debug_messenger) != VK_SUCCESS) {
-        throw std::runtime_error("failed to set up debug messenger!");
-    }
+  bool extensions_supported = check_device_extension_support(device);
+
+  bool swapchain_adequate = false;
+  if (extensions_supported) {
+    SwapChainSupportDetails swapchain_support = query_swap_chain_support(device);
+    swapchain_adequate = !swapchain_support.formats.empty() && !swapchain_support.present_modes.empty();
+  }
+
+  VkPhysicalDeviceFeatures supportedFeatures;
+  vkGetPhysicalDeviceFeatures(device, &supportedFeatures);
+
+  return indices.is_complete() && extensions_supported && swapchain_adequate &&
+         supportedFeatures.samplerAnisotropy;
 }
 
 std::vector<const char *> Device::get_required_extensions() {
